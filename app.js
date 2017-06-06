@@ -1,10 +1,17 @@
-const express = require('express')
-const app = express()
+var mysql = require('mysql');
 
-app.get('/', function (req, res) {
-  res.send('Hello World!')
-})
-
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!')
-})
+var con = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database:"chat"
+});
+var sql="Select * from chat_question"
+con.connect(function(err) {
+  if (err) throw err;
+  console.log("Connected!");
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("Result: " + result);
+  });
+});
