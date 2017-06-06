@@ -1,17 +1,9 @@
-var mysql = require('mysql');
+// Retrieve
+var MongoClient = require('mongodb').MongoClient;
 
-var con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database:"chat"
-});
-var sql="Select * from chat_question"
-con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected!");
-  con.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log("Result: " + result);
-  });
+// Connect to the db
+MongoClient.connect("mongodb://localhost:27017/chat", function(err, db) {
+  if(!err) {
+    console.log("We are connected");
+  }
 });
