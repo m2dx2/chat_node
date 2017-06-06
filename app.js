@@ -2,8 +2,14 @@
 var MongoClient = require('mongodb').MongoClient;
 
 // Connect to the db
-MongoClient.connect("mongodb://localhost:27017/chat", function(err, db) {
-  if(!err) {
-    console.log("We are connected");
-  }
+var url="mongodb://localhost:27017/chat";
+
+MongoClient.connect(url, function(err, db) {
+  if (err) throw err;
+  var query = {};
+  db.collection("mycol").find(query).toArray(function(err, result) {
+    if (err) throw err;
+    console.log(result);
+    db.close();
+  });
 });
