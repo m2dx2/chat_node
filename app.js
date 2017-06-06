@@ -14,9 +14,8 @@ app.get('/', function (req, res) {
 	  var query = {};
 	  db.collection("QuestionCollection").find(query).toArray(function(err, result) {
 	    if (err) throw err;
-	    res.send(result[0].ans);
 	    db.close();
-	    return result[0].ans;
+	   
 	  });
 	});
 })
@@ -29,18 +28,18 @@ app.listen(4200, function () {
     // res.end();
 // }).listen(4200);
 
-function getData(){
-	MongoClient.connect(url, function(err, db) {
-	  if (err) throw err;
-	  var query = {};
-	  db.collection("QuestionCollection").find(query).toArray(function(err, result) {
-	    if (err) throw err;
-	    // result.forEach(function(value){
-	    // 	console.log(value.Qes+" "+value.ans);
-	    // })
-	    console.log("in fun "+result[0].answer);
-	    db.close();
-	    return result[0].answer;
-	  });
-	});
-}
+// function getData(){
+	// MongoClient.connect(url, function(err, db) {
+	  // if (err) throw err;
+	  // var query = {};
+	  // db.collection("QuestionCollection").find(query).toArray(function(err, result) {
+	    // if (err) throw err;
+	    // // result.forEach(function(value){
+	    // // 	console.log(value.Qes+" "+value.ans);
+	    // // })
+	    // console.log("in fun "+result[0].answer);
+	    // db.close();
+	    // return result[0].answer;
+	  // });
+	// });
+// }
