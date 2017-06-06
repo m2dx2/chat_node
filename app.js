@@ -14,6 +14,7 @@ app.get('/', function (req, res) {
 	  var query = {};
 	  db.collection("QuestionCollection").find(query).toArray(function(err, result) {
 	    if (err) throw err;
+	    res.send(result[0].Question)
 	    db.close();
 	   
 	  });
