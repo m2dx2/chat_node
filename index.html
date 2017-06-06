@@ -112,10 +112,10 @@ input:focus{
 <script type="text/javascript">
 var name;
 var me = {};
-me.avatar = "http://localhost:8081/node_chat/images/me.JPG";
+me.avatar = "images/me.JPG";
 
 var you = {};
-you.avatar = "http://localhost:8081/node_chat/images/you.jpg";
+you.avatar = "images/you.jpg";
 
 function formatAMPM(date) {
     var hours = date.getHours();
@@ -177,6 +177,7 @@ $(".mytext").on("keypress", function(e){
      if(!name){
 		 name=text;
 		insertChat("you", "Hello,"+name+"", 1000);
+
 		}
     }
     
