@@ -1,0 +1,5 @@
+git status 
+git add .
+git commit -m "Place your commit comment here"
+git pull origin master
+git push origin master
