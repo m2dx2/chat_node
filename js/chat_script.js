@@ -1,11 +1,9 @@
 var name='';
-var flag=false; 
 var me = {};
 me.avatar = "images/me.JPG";
 
 var you = {};
 you.avatar = "images/you.jpg";
-
 function formatAMPM(date) {
     var hours = date.getHours();
     var minutes = date.getMinutes();
@@ -18,7 +16,7 @@ function formatAMPM(date) {
 }            
 
 //-- No use time. It is a javaScript effect.
-function insertChat(who, text, time = 0,option){
+function insertChat(who, text, time = 0,flag){
     var control = "";
     var date = formatAMPM(new Date());
     
@@ -34,10 +32,11 @@ function insertChat(who, text, time = 0,option){
                         '</div>' +
                     '</li>';                    
     }else if(flag==true){
+        $("#chat_box").attr("disabled", "disabled"); 
         control = '<li style="width:100%;">' +
                         '<div class="msj-rta macro">' +
                             '<div class="text text-r">' +
-                                '<p>'+text+'</p>' +
+                                '<button class="btn btn-default answerButton" >'+text+'</button>' +
                                 '<p><small>'+date+'</small></p>' +
                             '</div>' +
                         '<div class="avatar" style="padding:0px 0px 0px 10px !important"><img class="img-circle" style="width:100%;" src="'+you.avatar+'" /></div>' +                                
@@ -105,17 +104,28 @@ function getResponse(val){
         success:function(msg){
             if(msg.status){
                 console.log(msg)
-                $.each(msg.result,function(key,value){
-                    insertChat("you",value.answer,1000);
-                });
-                    
+                if(msg.result.length>1){
+                    $.each(msg.result,function(key,value){
+                        insertChat("you",value.answer,1000,true);
+                    }); 
+                }else{
+                     insertChat("you",msg.result[0].answer,1000);
+                }  
+                $("#chat_box").removeAttr("disabled"); 
             }else if(msg.err){
                 console.log(msg.err.message);
                 insertChat("you","Ooops, something is broken here.Let me fix it first.", 2000);
             }else{
-               
                 insertChat("you","i am not sure what you are talking about", 2000);
             }
         }
     });
 }
+//on clicking on of the options
+ $(document).on('click','.answerButton',function(){
+    
+   var data=$(this).text();
+   getResponse(data);
+   $('.answerButton').removeClass("answerButton");
+    
+});
