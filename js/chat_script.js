@@ -55,8 +55,11 @@ function resetChat(){
 }
 
 $(".mytext").on("keypress", function(e){
+	
+getResponse(text);
 	//enter key value is 13
     if (e.which == 13){
+		alert("sdfsdf");
         var text = $(this).val();
         if (text !== ""){
             insertChat("me", text);              
@@ -64,6 +67,7 @@ $(".mytext").on("keypress", function(e){
         }
         //console.log(name);
      if(!name){
+		 alert("sdfsd");
 		 name=text;
 		insertChat("you", "Hello,"+name+"", 1000);
 		}else{
@@ -88,11 +92,13 @@ insertChat("you", "Hello whats your name...", 0);
 
 //-- NOTE: No use time on insertChat.
 function getResponse(val){
-    console.log('{"Question":"'+val+'"}');
+console.log($('#chat_form').serialize());
     $.ajax({
         type:"POST",
         url:"http://localhost:4200/getResponse",
-        data:'{"Question":"'+val+'"}',
+        data:{
+			theme: "somevalue"
+			},
         success:function(msg){
             if(msg){
                 insertChat("you", msg,1000);  
