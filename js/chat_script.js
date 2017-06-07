@@ -1,4 +1,5 @@
 var name='';
+var flag=false; 
 var me = {};
 me.avatar = "images/me.JPG";
 
@@ -17,7 +18,7 @@ function formatAMPM(date) {
 }            
 
 //-- No use time. It is a javaScript effect.
-function insertChat(who, text, time = 0){
+function insertChat(who, text, time = 0,option){
     var control = "";
     var date = formatAMPM(new Date());
     
@@ -32,6 +33,15 @@ function insertChat(who, text, time = 0){
                             '</div>' +
                         '</div>' +
                     '</li>';                    
+    }else if(flag==true){
+        control = '<li style="width:100%;">' +
+                        '<div class="msj-rta macro">' +
+                            '<div class="text text-r">' +
+                                '<p>'+text+'</p>' +
+                                '<p><small>'+date+'</small></p>' +
+                            '</div>' +
+                        '<div class="avatar" style="padding:0px 0px 0px 10px !important"><img class="img-circle" style="width:100%;" src="'+you.avatar+'" /></div>' +                                
+                  '</li>';
     }else{
         control = '<li style="width:100%;">' +
                         '<div class="msj-rta macro">' +
@@ -65,7 +75,7 @@ $(".mytext").on("keypress", function(e){
 		 name=text;
 		insertChat("you", "Hello,"+name+"", 1000);
 		}else{
-            console.log("calling ...");
+           // console.log("calling ...");
             getResponse(text);
         }
     }
@@ -87,19 +97,23 @@ insertChat("you", "Hello whats your name...", 0);
 
 //-- NOTE: No use time on insertChat.
 function getResponse(val){
-console.log(val);
+//console.log(val);
     $.ajax({
         type:"POST",
         url:"http://localhost:4200/getResponse",
         data:{"msg":val},
         success:function(msg){
-            if(msg){
-                $.each(msg,function(key,value){
+            if(msg.status){
+                console.log(msg)
+                $.each(msg.result,function(key,value){
                     insertChat("you",value.answer,1000);
                 });
-                  
+                    
+            }else if(msg.err){
+                console.log(msg.err.message);
+                insertChat("you","Ooops, something is broken here.Let me fix it first.", 2000);
             }else{
-                //console.log("response came "+msg)
+               
                 insertChat("you","i am not sure what you are talking about", 2000);
             }
         }
