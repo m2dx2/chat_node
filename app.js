@@ -23,8 +23,10 @@ app.use(allowCrossDomain);
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/', function (req, res) {
 	MongoClient.connect(url, function(err, db) {
+
 	  if (err) return err_occured(res,err);
 	    res.send("connected")
+
 
 	});
 })
