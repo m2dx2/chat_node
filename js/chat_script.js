@@ -55,22 +55,17 @@ function resetChat(){
 }
 
 $(".mytext").on("keypress", function(e){
-	
-getResponse(text);
-	//enter key value is 13
     if (e.which == 13){
-		alert("sdfsdf");
         var text = $(this).val();
         if (text !== ""){
             insertChat("me", text);              
             $(this).val('');
         }
-        //console.log(name);
      if(!name){
-		 alert("sdfsd");
 		 name=text;
 		insertChat("you", "Hello,"+name+"", 1000);
 		}else{
+            console.log("calling ...");
             getResponse(text);
         }
     }
@@ -92,18 +87,19 @@ insertChat("you", "Hello whats your name...", 0);
 
 //-- NOTE: No use time on insertChat.
 function getResponse(val){
-console.log($('#chat_form').serialize());
+console.log(val);
     $.ajax({
         type:"POST",
         url:"http://localhost:4200/getResponse",
-        data:{
-			theme: "somevalue"
-			},
+        data:{"msg":val},
         success:function(msg){
             if(msg){
-                insertChat("you", msg,1000);  
+                $.each(msg,function(key,value){
+                    insertChat("you",value.answer,1000);
+                });
+                  
             }else{
-                console.log("response came "+msg)
+                //console.log("response came "+msg)
                 insertChat("you","i am not sure what you are talking about", 2000);
             }
         }
