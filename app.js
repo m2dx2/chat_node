@@ -6,41 +6,50 @@ var date=require('./getDateModule');
 var url="mongodb://localhost:27017/chat";
 var express = require('express')
 var app = express()
+var bodyParser = require('body-parser')
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+//cross origin supeeort 
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
 
+    next();
+}
+app.use(allowCrossDomain);
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/', function (req, res) {
 	MongoClient.connect(url, function(err, db) {
-	  if (err) throw err;
-	  var query = {};
-	  db.collection("QuestionCollection").find(query).toArray(function(err, result) {
-	    if (err) throw err;
-		res.send(result[0].Question);
-	    db.close();
-	   
-	  });
+
+	  if (err) return err_occured(res,err);
+	    res.send("connected")
+
+
 	});
 })
 app.listen(4200, function () {
   console.log('Example app listening on port 4200!')
 })
-// http.createServer(function (req, res) {
-    // res.writeHead(200, {'Content-Type': 'text/html'});
-    // res.write("Getting data by function "+getData()+" \n on date "+date.myDateTime());
-    // res.end();
-// }).listen(4200);
-
-// function getData(){
-	// MongoClient.connect(url, function(err, db) {
-	  // if (err) throw err;
-	  // var query = {};
-	  // db.collection("QuestionCollection").find(query).toArray(function(err, result) {
-	    // if (err) throw err;
-	    // // result.forEach(function(value){
-	    // // 	console.log(value.Qes+" "+value.ans);
-	    // // })
-	    // console.log("in fun "+result[0].answer);
-	    // db.close();
-	    // return result[0].answer;
-	  // });
-	// });
-// }
+//post method to get chat response
+app.post('/getResponse', function (req, res) {
+	MongoClient.connect(url, function(err, db) {
+	  if (err) return err_occured(res,err);
+	  var status=0;//0 if result is 0
+	  var qstn=req.body.msg;
+	  var query = {"Question":qstn};
+	  //console.log(query);
+	  db.collection("QuestionCollection").find(query).toArray(function(err, result) {
+	  	if(result.length>0)status=1;
+	    if (err) err_occured(res,err);
+	    var final_result={"status":status,"result":result,"err":err}
+	    res.send(final_result)
+	  });
+	});
+})
+function err_occured(res,err){
+	res.send({"status":0,"result":"","err":err});
+	//exit();
+}
