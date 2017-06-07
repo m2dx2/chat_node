@@ -6,6 +6,7 @@ var date=require('./getDateModule');
 var url="mongodb://localhost:27017/chat";
 var express = require('express')
 var app = express()
+//cross origin supeeort 
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', 'http://localhost:8081');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
