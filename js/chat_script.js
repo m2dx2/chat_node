@@ -72,7 +72,7 @@ $(".mytext").on("keypress", function(e){
         }
      if(!name){
 		 name=text;
-		insertChat("you", "Hello,"+name+"", 1000);
+		insertChat("you", "Hello,"+name+" \n do you want Personal Loan", 1000);
 		}else{
            // console.log("calling ...");
             getResponse(text);
