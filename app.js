@@ -20,18 +20,14 @@ app.use(allowCrossDomain);
 app.get('/', function (req, res) {
 	MongoClient.connect(url, function(err, db) {
 	  if (err) throw err;
-	  var query = {};
-	  db.collection("QuestionCollection").find(query).toArray(function(err, result) {
-	    if (err) throw err;
-	    res.send(result[0].Question)
-	    db.close();
-	   
-	  });
+	    res.send("connected")
+
 	});
 })
 app.listen(4200, function () {
   console.log('Example app listening on port 4200!')
 })
+
 app.post('/getResponse', function (req, res) {
 	MongoClient.connect(url, function(err, db) {
 	  if (err) throw err;
