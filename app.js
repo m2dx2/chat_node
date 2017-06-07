@@ -15,7 +15,6 @@ var allowCrossDomain = function(req, res, next) {
     next();
 }
 app.use(allowCrossDomain);
- 
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/', function (req, res) {
 	MongoClient.connect(url, function(err, db) {
@@ -27,12 +26,13 @@ app.get('/', function (req, res) {
 app.listen(4200, function () {
   console.log('Example app listening on port 4200!')
 })
-
+//post method to get chat response
 app.post('/getResponse', function (req, res) {
 	MongoClient.connect(url, function(err, db) {
 	  if (err) throw err;
+	    console.log(req.body);
 	  var query = {};
-	  db.collection("QuestionCollection").find(query).toArray(function(err, result) {
+	  db.collection("QuestionCollection").find().toArray(function(err, result) {
 	    if (err) throw err;
 	    res.send(result[0].Question)
 	    db.close();
