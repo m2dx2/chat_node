@@ -66,9 +66,12 @@ function resetChat(){
 $(".mytext").on("keypress", function(e){
     if (e.which == 13){
         var text = $(this).val();
-        if (text !== ""){
+        if (text != ""){
             insertChat("me", text);              
             $(this).val('');
+        }else{
+                 alert("write a message first");
+                 return false;
         }
      if(!name){
 		 name=text;
@@ -97,6 +100,7 @@ insertChat("you", "Hello whats your name...", 0);
 //-- NOTE: No use time on insertChat.
 function getResponse(val){
 //console.log(val);
+
     $.ajax({
         type:"POST",
         url:"http://localhost:4200/getResponse",
@@ -105,13 +109,18 @@ function getResponse(val){
             if(msg.status){
                 console.log(msg)
                 if(msg.result.length>1){
+                    
                     $.each(msg.result,function(key,value){
                         insertChat("you",value.answer,1000,true);
                     }); 
+                    $('#chat_box').prop( "disabled", true );
+                    
                 }else{
+                   
                      insertChat("you",msg.result[0].answer,1000);
+                      $('#chat_box').prop( "disabled", false );
                 }  
-                $("#chat_box").removeAttr("disabled"); 
+                
             }else if(msg.err){
                 console.log(msg.err.message);
                 insertChat("you","Ooops, something is broken here.Let me fix it first.", 2000);
@@ -126,6 +135,6 @@ function getResponse(val){
     
    var data=$(this).text();
    getResponse(data);
-   $('.answerButton').removeClass("answerButton");
+   $('.answerButton').removeClass('answerButton');
     
 });

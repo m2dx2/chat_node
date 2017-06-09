@@ -51,7 +51,7 @@ ul {
     bottom:32px;
     display:flex;
     flex-direction: column;
-
+    overflow-y: scroll;
 }
 .msj:before{
     width: 0;
