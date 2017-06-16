@@ -1,3 +1,4 @@
+var cust_data=[];
 var name='';
 var me = {};
 me.avatar = "images/me.JPG";
@@ -34,9 +35,9 @@ function insertChat(who, text, time = 0,flag){
     }else if(flag==true){
         $("#chat_box").attr("disabled", "disabled"); 
         control = '<li style="width:100%;">' +
-                        '<div class="msj-rta macro">' +
+                        '<div class="msj-rta macro ">' +
                             '<div class="text text-r">' +
-                                '<button class="btn btn-default answerButton" >'+text+'</button>' +
+                                '<button class="btn btn-default answerButton" style="background-color: #00daff" >'+text+'</button>' +
                                 '<p><small>'+date+'</small></p>' +
                             '</div>' +
                         '<div class="avatar" style="padding:0px 0px 0px 10px !important"><img class="img-circle" style="width:100%;" src="'+you.avatar+'" /></div>' +                                
@@ -66,7 +67,18 @@ function resetChat(){
 $(".mytext").on("keypress", function(e){
     if (e.which == 13){
         var text = $(this).val();
-        if (text != ""){
+
+        if (text != ""){cust_data.push(text);}
+         if(cust_data.length==3){
+            $('#chat_box').type="number";
+         }
+        
+        if(cust_data.length>3){
+            insertChat("me", text); 
+
+            finish();
+        }else{
+             if (text != ""){
             insertChat("me", text);              
             $(this).val('');
         }else{
@@ -74,32 +86,34 @@ $(".mytext").on("keypress", function(e){
                  return false;
         }
      if(!name){
-		 name=text;
-		insertChat("you", "Hello,"+name+" \n do you want Personal Loan", 1000);
-		}else{
+         name=text;
+         options=['Personal Loan','Home Loan','LAP']
+        insertChat("you", "Hello,"+name, 1000);
+        insertChat("you", "What kind of loan do you required?", 1000);
+        
+       
+       $.each(options,function(key,value){
+                insertChat("you",value,2000,true);
+        }); 
+
+        }else{
            // console.log("calling ...");
             getResponse(text);
         }
     }
-    
+ }
+        
+       
+   
 });
 
 //-- Clear Chat
 resetChat();
-
-//-- Print Messages
-
-insertChat("you", "Hello whats your name...", 0);  
-
-// insertChat("me", "What would you like to talk about today?", 3500);
-// insertChat("you", "Tell me a joke",7000);
-// insertChat("me", "Spaceman: Computer! Computer! Do we bring battery?!", 9500);
-// insertChat("you", "LOL", 12000);
+insertChat("you", "Welcome to RupeeBoss.com ...", 0);  
+insertChat("you", "What's your good name?", 0);  
 
 
-//-- NOTE: No use time on insertChat.
 function getResponse(val){
-//console.log(val);
 
     $.ajax({
         type:"POST",
@@ -109,10 +123,12 @@ function getResponse(val){
             if(msg.status){
                 console.log(msg)
                 if(msg.result.length>1){
-                    
+                     //console.log(msg.result[0].comment);
+                    insertChat("you",msg.result[0].comment,500);
                     $.each(msg.result,function(key,value){
                         insertChat("you",value.answer,1000,true);
                     }); 
+                   
                     $('#chat_box').prop( "disabled", true );
                     
                 }else{
@@ -124,8 +140,9 @@ function getResponse(val){
             }else if(msg.err){
                 console.log(msg.err.message);
                 insertChat("you","Ooops, something is broken here.Let me fix it first.", 2000);
+
             }else{
-                insertChat("you","i am not sure what you are talking about", 2000);
+                insertChat("you","Thanks We will reach you soon.", 2000);
             }
         }
     });
@@ -134,7 +151,57 @@ function getResponse(val){
  $(document).on('click','.answerButton',function(){
     
    var data=$(this).text();
-   getResponse(data);
+   cust_data.push(data);
+      console.log(cust_data);
+   if(data=='salaried'){
+        insertChat("you",name +",What's your monthly Income?", 0);  
+         $('#chat_box').prop( "disabled", false );
+    }else if(data=='self Employed'){
+        insertChat("you",name +",What's your profit after tax?", 0);  
+         $('#chat_box').prop( "disabled", false );
+    } else{
+        getResponse(data);
+    }
+   
+  // $( ".answerButton" ) .closest( "li" ).hide();
    $('.answerButton').removeClass('answerButton');
-    
+    //insertChat("you","Good choice,Let me know a bit more about your choice", 1000);
 });
+function finish(){
+
+    if(cust_data.length==4){
+        insertChat("you","Existing EMI Amount?", 1000); 
+    }else if(cust_data.length==5){
+        loan_eligible_calc();
+
+        insertChat("you","What's your phone number?", 2000); 
+    }else if(cust_data.length==6){
+         insertChat("you","What's your email-id?", 1000); 
+    }else{
+        insertChat("you","Thanks,Our executives working around the clock. we will reach you soon.", 1000); 
+    }
+    $('#chat_box').val('');
+    console.log(cust_data);
+}
+function loan_eligible_calc(){
+    var salary=cust_data[3];
+    var emi=cust_data[4];
+    var net_income=salary-emi;
+    var foir=45/100;
+    if(net_income<20000){
+        foir=35/100;
+    }else if(net_income>20000 && net_income<75000){
+        foir=40/100;
+    }
+    if(emi==0)emi=1;
+
+    var elig=net_income*foir*60;
+
+    if(isNaN(elig)){
+        cust_data.splice(4,1);
+        cust_data.splice(5,1);
+        insertChat("you","Enter your income again", 1000); 
+        return false;
+    }
+    insertChat("you","Congrats, you are eligible for "+elig+" Rupees.", 1000); 
+}

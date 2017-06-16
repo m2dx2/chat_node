@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "angular2-universal": "^2.1.0-rc.1",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "gulp-install": "^1.1.0",
     "ioredis": "^3.1.1",
     "minimatch": "^3.0.2",
     "ng-chatbox": "^1.0.1",
+    "preboot": "^5.0.0-rc.10",
     "socket.io": "^2.0.2"
   },
   "devDependencies": {},
