@@ -46,6 +46,28 @@ app.post('/getResponse', function (req, res) {
 	    var final_result={"status":status,"result":result,"err":err}
 	    res.send(final_result)
 	  });
+	   db.close();
+	});
+})
+
+//storing customer information
+app.post('/SaveCustomer', function (req, res) {
+	MongoClient.connect(url, function(err, db) {
+	  if (err) return err_occured(res,err);
+	  var status=0;//0 if result is 0
+	  console.log(req.body.data);
+	  var data=req.body.data;
+	  
+	  db.collection("Customer_data").insert({
+         "User_data" : data
+        }, function(err, result) {
+            if (err) {
+                console.log(err); 
+                db.close();
+                return;
+            } 
+            db.close();
+        })
 	});
 })
 function err_occured(res,err){

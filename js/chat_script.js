@@ -152,7 +152,7 @@ function getResponse(val){
     
    var data=$(this).text();
    cust_data.push(data);
-      console.log(cust_data);
+   insertChat("me",data,0);
    if(data=='salaried'){
         insertChat("you",name +",What's your monthly Income?", 0);  
          $('#chat_box').prop( "disabled", false );
@@ -178,6 +178,7 @@ function finish(){
     }else if(cust_data.length==6){
          insertChat("you","What's your email-id?", 1000); 
     }else{
+        store_cust_data(cust_data);
         insertChat("you","Thanks,Our executives working around the clock. we will reach you soon.", 1000); 
     }
     $('#chat_box').val('');
@@ -204,4 +205,16 @@ function loan_eligible_calc(){
         return false;
     }
     insertChat("you","Congrats, you are eligible for "+elig+" Rupees.", 1000); 
+}  
+
+function store_cust_data(data){
+   
+     $.ajax({
+        type:"POST",
+        url:"http://localhost:4200/SaveCustomer",
+        data:{"data":data},
+        success:function(msg){
+            console.log(msg);
+        }
+    });
 }
