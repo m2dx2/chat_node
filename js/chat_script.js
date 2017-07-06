@@ -208,7 +208,7 @@ function loan_eligible_calc(){
 }  
 
 function store_cust_data(data){
-   
+    console.log(data);
      $.ajax({
         type:"POST",
         url:"http://localhost:4200/SaveCustomer",
